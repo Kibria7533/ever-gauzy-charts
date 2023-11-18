@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.variables.apiServiceName }}
+  labels:
+    app: {{ .Values.variables.apiServiceName }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.variables.apiServiceName }}
+  replicas: {{ .Values.variables.replicaCount }}
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.variables.apiServiceName }}
+    spec:
+      {{ if .Values.variables.enableGitCommitCommandFetch }}
+      initContainers:
+        - name: git-command-fetch
+          image: everpeace/curl-jq
+          command:
+            - /bin/sh
+            - -c
+            - |
+              CFETCH=$(curl --header "PRIVATE-TOKEN: glpat-oXQeiiuWoJeRWc18ctcm" "https://gitlab.com/api/v4/projects/{{ .Values.variables.githubProjectRepoID }}/repository/commits/master" | jq '.title'  | grep -oP "RELEASE\s*?=\s*?'\K[^']*")
+              mkdir -p /vol
+              touch /vol/cmd.php
+              echo $CFETCH >> /vol/cmd.php
+          volumeMounts:
+            - mountPath: /vol
+              name: cmd-vol
+      {{end}}
+      containers:
+        - name: {{ .Values.variables.apiServiceName }}
+          image: "{{ .Values.variables.apiImageRepository }}:{{ .Values.variables.apiImageAppVersion  | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.variables.imagePullPolicy }}
+          ports:
+            - containerPort: 3000
+              protocol: TCP
+          env:
+            {{ if eq .Values.variables.API_ENV "DEV" }}
+              {{- range $key, $val := .Values.variables.API_DEV }}
+              - name: {{ $key }}
+                value: {{ $val | quote }}
+              {{- end }}
+              {{end}}
+              {{- if .Values.postgresql.enabled }}
+              - name: DB_HOST
+                value: "{{ .Release.Name}}-postgresql-headless"
+              - name: DB_NAME
+                value: {{ .Values.postgresql.global.postgresql.postgresqlDatabase | quote }}
+              - name: DB_PASS
+                value: {{ .Values.postgresql.global.postgresql.postgresqlPassword | quote }}
+              - name: DB_USER
+                value: {{ .Values.postgresql.global.postgresql.postgresqlUsername | quote }}
+              - name: DB_PORT
+                value: {{ .Values.postgresql.global.postgresql.servicePort | quote }}
+              {{- end }}
+          lifecycle:
+            postStart:
+              exec:
+                command:
+                  - "sh"
+                  - "-c"
+                  - >
+
+          volumeMounts:
+            - name: "{{ .Chart.Name }}"
+              mountPath: /app/storage
+              {{ if .Values.variables.enableGitCommitCommandFetch }}
+            - name: cmd-vol
+              mountPath: /vol
+              {{end}}
+      hostAliases:
+      - ip: {{ .Values.siteIP }}
+        hostnames: {{ .Values.sites }}
+      volumes:
+        - name: "{{ .Chart.Name }}"
+          persistentVolumeClaim:
+            claimName: "{{ .Chart.Name }}-pv-claim"
+            {{ if .Values.variables.enableGitCommitCommandFetch }}
+        - name: cmd-vol
+          emptyDir: {}
+                      {{end}}
+      imagePullSecrets:
+        - name: regcred
