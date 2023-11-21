@@ -8,7 +8,7 @@ spec:
   selector:
     matchLabels:
       app: {{ .Values.variables.apiServiceName }}
-  replicas: {{ .Values.variables.replicaCount }}
+  replicas: {{ .Values.variables.apiReplicaCount }}
   strategy:
     type: RollingUpdate
   template:
@@ -16,6 +16,10 @@ spec:
       labels:
         app: {{ .Values.variables.apiServiceName }}
     spec:
+      {{ if .Values.affinityEnable }}
+      affinity:
+        {{- toYaml .Values.affinity | nindent 7 }}
+      {{end}}
       {{ if .Values.variables.enableGitCommitCommandFetch }}
       initContainers:
         - name: git-command-fetch
@@ -40,8 +44,8 @@ spec:
             - containerPort: 3000
               protocol: TCP
           env:
-            {{ if eq .Values.variables.API_ENV "DEV" }}
-              {{- range $key, $val := .Values.variables.API_DEV }}
+            {{ if eq .Values.variables.API "DEV" }}
+              {{- range $key, $val := .Values.API_DEV }}
               - name: {{ $key }}
                 value: {{ $val | quote }}
               {{- end }}
@@ -85,4 +89,4 @@ spec:
           emptyDir: {}
                       {{end}}
       imagePullSecrets:
-        - name: regcred
+        - name: {{ .Values.variables.imagePullSecrets }}

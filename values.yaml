@@ -2,33 +2,148 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 # Please do not change anything if you dont know what you are doing
+
+#Below this siteIP and sites will be writen inside th hosts file of the pods
 siteIP: "172.17.177.89"
 
 sites: |
-  [ 'apim-dev.niseee.gov.bd', 'identity-dev.niseee.gov.bd']
+  [ 'demo.api.in']
 
 postgresql:
   enabled: true
   global:
+    storageClass: "nfs-client"
     postgresql:
       postgresqlDatabase: "usersdb"
       postgresqlPassword: "Hello@123"
       postgresqlUsername: "userservice-pguser"
       servicePort: "5432"
+externalDB:
+    enable: false
+    DB_URI: '$DB_URI'
+    DB_HOST: '$DB_HOST'
+    DB_SSL_MODE: '$DB_SSL_MODE'
+    DB_CA_CERT: '$DB_CA_CERT'
+    DB_USER: '$DB_USER'
+    DB_PASS: '$DB_PASS'
+    DB_TYPE: '$DB_TYPE'
+    DB_NAME: '$DB_NAME'
+    DB_PORT: '$DB_PORT'
+wasabi:
+    enable: false
+    WASABI_ACCESS_KEY_ID: '$WASABI_ACCESS_KEY_ID'
+    WASABI_SECRET_ACCESS_KEY: '$WASABI_SECRET_ACCESS_KEY'
+    WASABI_REGION: '$WASABI_REGION'
+    WASABI_SERVICE_URL: '$WASABI_SERVICE_URL'
+    WASABI_S3_BUCKET: '$WASABI_S3_BUCKET'
+cloudinary:
+    enable: false
+    CLOUDINARY_API_KEY: '$CLOUDINARY_API_KEY'
+    CLOUDINARY_API_SECRET: '$CLOUDINARY_API_SECRET'
+    CLOUDINARY_CLOUD_NAME: '$CLOUDINARY_CLOUD_NAME'
+aws:
+ enable: false
+ AWS_ACCESS_KEY_ID: '$AWS_ACCESS_KEY_ID'
+ AWS_SECRET_ACCESS_KEY: '$AWS_SECRET_ACCESS_KEY'
+ AWS_REGION: '$AWS_REGION'
+ AWS_S3_BUCKET: '$AWS_S3_BUCKET'
+
+DEFAULT_CURRENCY: 'USD'
+
+mail:
+    enable: true
+    MAIL_FROM_ADDRESS: '$MAIL_FROM_ADDRESS'
+    MAIL_HOST: '$MAIL_HOST'
+    MAIL_PORT: '$MAIL_PORT'
+    MAIL_USERNAME: '$MAIL_USERNAME'
+    MAIL_PASSWORD: '$MAIL_PASSWORD'
+
+WEB: DEV
+WEB_ENV:
+  APP_ENV: "DEV"
+  DEMO: 'true'
+  API_BASE_URL: 'https://apidemo.gauzy.co'
+  CLIENT_BASE_URL: 'https://demo.gauzy.co'
+  SENTRY_DSN: 'https://7cd381188b6f446ca0e69185227b9031@o51327.ingest.sentry.io/4397292'
+  CHATWOOT_SDK_TOKEN: 'jFoSXEjGmqhUhqU3zfgkFfMt'
+  CLOUDINARY_API_KEY: '256868982483961'
+  CLOUDINARY_CLOUD_NAME: 'dv6ezkfxg'
+  GOOGLE_MAPS_API_KEY: 'AIzaSyCJmnKzgTSq5Pc93HXar5bZrdmANTwtSIo'
+  GOOGLE_PLACE_AUTOCOMPLETE: 'true'
+  DEFAULT_LATITUDE: '42.6459136'
+  DEFAULT_LONGITUDE: '23.3332736'
+  DEFAULT_CURRENCY: 'USD'
+  GAUZY_GITHUB_CLIENT_ID: '$GAUZY_GITHUB_CLIENT_ID'
+  GAUZY_GITHUB_APP_NAME: '$GAUZY_GITHUB_APP_NAME'
+  GAUZY_GITHUB_REDIRECT_URL: '$GAUZY_GITHUB_REDIRECT_URL'
+  GAUZY_GITHUB_POST_INSTALL_URL: '$GAUZY_GITHUB_POST_INSTALL_URL'
+  GAUZY_GITHUB_APP_ID: '$GAUZY_GITHUB_APP_ID'
+  JITSU_BROWSER_URL: '$JITSU_BROWSER_URL'
+  JITSU_BROWSER_WRITE_KEY: '$JITSU_BROWSER_WRITE_KEY'
+
+API: DEV
+API_DEV:
+  GIT_DEVELOPMENT_BRANCH: "main"
+  GIT_PRODUCTION_BRANCH: "master"
+  API_HOST: gauzy-demo-api
+  DEMO: true
+  NODE_ENV: development
+  ADMIN_PASSWORD_RESET: true
+  LOG_LEVEL: info
+  SENTRY_DSN: 'https://7cd381188b6f446ca0e69185227b9031@o51327.ingest.sentry.io/4397292'
+  SENTRY_HTTP_TRACING_ENABLED: false
+  SENTRY_POSTGRES_TRACKING_ENABLED: false
+  API_BASE_URL: 'https://apidemo.gauzy.co'
+  CLIENT_BASE_URL: 'https://demo.gauzy.co'
+  EXPRESS_SESSION_SECRET: gauzy
+  JWT_SECRET: secretKey
+  JWT_REFRESH_TOKEN_SECRET: refreshSecretKey
+  JWT_REFRESH_TOKEN_EXPIRATION_TIME: '86400'
+  ALLOW_SUPER_ADMIN_ROLE: '$ALLOW_SUPER_ADMIN_ROLE'
+  GOOGLE_CLIENT_ID: '$GOOGLE_CLIENT_ID'
+  GOOGLE_CLIENT_SECRET: '$GOOGLE_CLIENT_SECRET'
+  GOOGLE_CALLBACK_URL: '$GOOGLE_CALLBACK_URL'
+  FACEBOOK_CLIENT_ID: '$FACEBOOK_CLIENT_ID'
+  FACEBOOK_CLIENT_SECRET: '$FACEBOOK_CLIENT_SECRET'
+  FACEBOOK_GRAPH_VERSION: '$FACEBOOK_GRAPH_VERSION'
+  FACEBOOK_CALLBACK_URL: '$FACEBOOK_CALLBACK_URL'
+  INTEGRATED_USER_DEFAULT_PASS: '$INTEGRATED_USER_DEFAULT_PASS'
+  UPWORK_REDIRECT_URL: '$UPWORK_REDIRECT_URL'
+  FILE_PROVIDER: '$FILE_PROVIDER'
+  GAUZY_AI_GRAPHQL_ENDPOINT: '$GAUZY_AI_GRAPHQL_ENDPOINT'
+  GAUZY_AI_REST_ENDPOINT: '$GAUZY_AI_REST_ENDPOINT'
+  UNLEASH_APP_NAME: '$UNLEASH_APP_NAME'
+  UNLEASH_API_URL: '$UNLEASH_API_URL'
+  UNLEASH_INSTANCE_ID: '$UNLEASH_INSTANCE_ID'
+  UNLEASH_REFRESH_INTERVAL: '$UNLEASH_REFRESH_INTERVAL'
+  UNLEASH_METRICS_INTERVAL: '$UNLEASH_METRICS_INTERVAL'
+  UNLEASH_API_KEY: '$UNLEASH_API_KEY'
+  PM2_PUBLIC_KEY: '$PM2_PUBLIC_KEY'
+  PM2_SECRET_KEY: '$PM2_SECRET_KEY'
+  PM2_MACHINE_NAME: '$PM2_MACHINE_NAME'
+  JITSU_SERVER_URL: '$JITSU_SERVER_URL'
+  JITSU_SERVER_WRITE_KEY: '$JITSU_SERVER_WRITE_KEY'
+  GAUZY_GITHUB_CLIENT_ID: '$GAUZY_GITHUB_CLIENT_ID'
+  GAUZY_GITHUB_CLIENT_SECRET: '$GAUZY_GITHUB_CLIENT_SECRET'
+  GAUZY_GITHUB_WEBHOOK_URL: '$GAUZY_GITHUB_WEBHOOK_URL'
+  GAUZY_GITHUB_WEBHOOK_SECRET: '$GAUZY_GITHUB_WEBHOOK_SECRET'
+  GAUZY_GITHUB_APP_PRIVATE_KEY: '$GAUZY_GITHUB_APP_PRIVATE_KEY'
+  GAUZY_GITHUB_APP_ID: '$GAUZY_GITHUB_APP_ID'
+  GAUZY_GITHUB_APP_NAME: '$GAUZY_GITHUB_APP_NAME'
+  GAUZY_GITHUB_CALLBACK_URL: '$GAUZY_GITHUB_CALLBACK_URL'
+  GAUZY_GITHUB_POST_INSTALL_URL: '$GAUZY_GITHUB_POST_INSTALL_URL'
 
 variables:
   apiServiceName: gauzy-demo-api
   apiServiceType: LoadBalancer
-  apiServicePort: 80
+  apiServicePort: 8WEB_ENV0
   apiServiceTargetPort: 3000
   apiServicePortLts: 443
-  APP_ENV: DEV
-  API_ENV: DEV
   hostName: lsg.gov.bd
 
   # if values is false, then creating ingress will be escape
   enableEngress: true
-
+  ingressRules: []
   # ingress cluster-issuer class
   ingressClusterIssuer: "k-issuer"
 
@@ -43,8 +158,10 @@ variables:
   # increase this when you need scale up
   replicaCount: 1
 
-  imagePullPolicy: IfNotPresent
+  apiReplicaCount: 1
 
+  imagePullPolicy: IfNotPresent
+  imagePullSecrets: regcred
   serviceType: LoadBalancer
 
   # service port, this provide traffic to ingress within this port
@@ -58,59 +175,6 @@ variables:
   #app buil image
   imageRepository: "everco/gauzy-webapp-demo"
   apiImageRepository: "everco/gauzy-api-demo"
-
-
-  #auto scaling config
-  #autoScalingEnabled: 0
-
-  #autoScalingMinReplicas: 1
-
-  #autoScalingMaxReplicas: 100
-
-  #autoScalingTargetCPUUtilizationPercentage: 80
-
-  #autoScalingTargetMemoryUtilizationPercentage: 80
-
-  #control git realese branch
-  API_DEV:
-    GIT_DEVELOPMENT_BRANCH: "main"
-    GIT_PRODUCTION_BRANCH: "master"
-    API_HOST: 0.0.0.0
-    DEMO: true
-    NODE_ENV: development
-    ADMIN_PASSWORD_RESET: true
-    LOG_LEVEL: info
-    SENTRY_DSN: 'https://7cd381188b6f446ca0e69185227b9031@o51327.ingest.sentry.io/4397292'
-    SENTRY_HTTP_TRACING_ENABLED: false
-    SENTRY_POSTGRES_TRACKING_ENABLED: false
-    API_BASE_URL: 'https://apidemo.gauzy.co'
-    CLIENT_BASE_URL: 'https://demo.gauzy.co'
-    EXPRESS_SESSION_SECRET: gauzy
-    JWT_SECRET: secretKey
-    JWT_REFRESH_TOKEN_SECRET: refreshSecretKey
-    JWT_REFRESH_TOKEN_EXPIRATION_TIME: '86400'
-
-  DEV:
-    APP_ENV: "DEV"
-    DEMO: 'true'
-    API_BASE_URL: 'https://apidemo.gauzy.co'
-    CLIENT_BASE_URL: 'https://demo.gauzy.co'
-    SENTRY_DSN: 'https://7cd381188b6f446ca0e69185227b9031@o51327.ingest.sentry.io/4397292'
-    CHATWOOT_SDK_TOKEN: 'jFoSXEjGmqhUhqU3zfgkFfMt'
-    CLOUDINARY_API_KEY: '256868982483961'
-    CLOUDINARY_CLOUD_NAME: 'dv6ezkfxg'
-    GOOGLE_MAPS_API_KEY: 'AIzaSyCJmnKzgTSq5Pc93HXar5bZrdmANTwtSIo'
-    GOOGLE_PLACE_AUTOCOMPLETE: 'true'
-    DEFAULT_LATITUDE: '42.6459136'
-    DEFAULT_LONGITUDE: '23.3332736'
-    DEFAULT_CURRENCY: 'USD'
-    GAUZY_GITHUB_CLIENT_ID: '$GAUZY_GITHUB_CLIENT_ID'
-    GAUZY_GITHUB_APP_NAME: '$GAUZY_GITHUB_APP_NAME'
-    GAUZY_GITHUB_REDIRECT_URL: '$GAUZY_GITHUB_REDIRECT_URL'
-    GAUZY_GITHUB_POST_INSTALL_URL: '$GAUZY_GITHUB_POST_INSTALL_URL'
-    GAUZY_GITHUB_APP_ID: '$GAUZY_GITHUB_APP_ID'
-    JITSU_BROWSER_URL: '$JITSU_BROWSER_URL'
-    JITSU_BROWSER_WRITE_KEY: '$JITSU_BROWSER_WRITE_KEY'
 
 #auto scaling config
 autoScaling:
@@ -126,3 +190,32 @@ resources:
   requests:
     memory: "500Mi"
     cpu: "500m"
+
+storageClass: "nfs-client"
+size: 1Gi
+affinityEnable: ture
+affinity:
+    nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+                - matchExpressions:
+                      - key: topology.kubernetes.io/region
+                        operator: In
+                        values:
+                            - ORD1
+                      - key: node.coreweave.cloud/cpu
+                        operator: In
+                        values:
+                            - intel-xeon-v3
+    podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                  labelSelector:
+                      matchExpressions:
+                          - key: app
+                            operator: In
+                            values:
+                                - gauzy-stage-api
+                  topologyKey: kubernetes.io/hostname
+              weight: 1
+

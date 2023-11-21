@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="KubernetesSettings">
+    <option name="contextName" value="arn:aws:eks:ap-south-1:881442209642:cluster/kubernetes-cluster" />
+  </component>
+</project>

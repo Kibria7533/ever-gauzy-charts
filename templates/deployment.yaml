@@ -16,6 +16,10 @@ spec:
       labels:
         app:  {{ .Chart.Name }}
     spec:
+      {{ if .Values.affinityEnable }}
+      affinity:
+        {{- toYaml .Values.affinity | nindent 7 }}
+      {{end}}
       containers:
         - name:  {{ .Chart.Name }}
           image: "{{ .Values.variables.imageRepository }}:{{ .Values.variables.imageAppVersion  | default .Chart.AppVersion }}"
@@ -25,8 +29,8 @@ spec:
           ports:
             - containerPort: {{ .Values.variables.serviceTargetPort }}
           env:
-            {{ if eq .Values.variables.APP_ENV "DEV" }}
-              {{- range $key, $val := .Values.variables.DEV }}
+            {{ if eq .Values.WEB "DEV" }}
+              {{- range $key, $val := .Values.WEB_ENV }}
               - name: {{ $key }}
                 value: {{ $val | quote }}
               {{- end }}
