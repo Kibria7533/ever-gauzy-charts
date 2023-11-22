@@ -2,14 +2,14 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "keycloak.name" -}}
+{{- define "ever-gauzy.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Create a default fully qualified app name.
 */}}
-{{- define "keycloak.fullname" -}}
+{{- define "ever-gauzy.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -25,16 +25,16 @@ Create a default fully qualified app name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "keycloak.chart" -}}
+{{- define "ever-gauzy.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "keycloak.labels" -}}
-helm.sh/chart: {{ include "keycloak.chart" . }}
-{{ include "keycloak.selectorLabels" . }}
+{{- define "ever-gauzy.labels" -}}
+helm.sh/chart: {{ include "ever-gauzy.chart" . }}
+{{ include "ever-gauzy.selectorLabels" . }}
 app.kubernetes.io/version: {{ .Values.image.tag | default .Chart.AppVersion | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
@@ -42,17 +42,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "keycloak.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "keycloak.name" . }}
+{{- define "ever-gauzy.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "ever-gauzy.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "keycloak.serviceAccountName" -}}
+{{- define "ever-gauzy.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "keycloak.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "ever-gauzy.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
@@ -61,16 +61,16 @@ Create the name of the service account to use
 {{/*
 Create the service DNS name.
 */}}
-{{- define "keycloak.serviceDnsName" -}}
-{{ include "keycloak.fullname" . }}-headless.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}
+{{- define "ever-gauzy.serviceDnsName" -}}
+{{ include "ever-gauzy.fullname" . }}-headless.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}
 {{- end }}
 
-{{- define "keycloak.databasePasswordEnv" -}}
+{{- define "ever-gauzy.databasePasswordEnv" -}}
 {{- if or .Values.database.password .Values.database.existingSecret -}}
 - name: KC_DB_PASSWORD
   valueFrom:
     secretKeyRef:
-      name: {{ .Values.database.existingSecret | default (printf "%s-database" (include "keycloak.fullname" . ))}}
+      name: {{ .Values.database.existingSecret | default (printf "%s-database" (include "ever-gauzy.fullname" . ))}}
       key: password
   {{- end }}
 {{- end -}}

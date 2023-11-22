@@ -1,0 +1,14 @@
+{{- if .Values.podDisruptionBudget -}}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "ever-gauzy.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "ever-gauzy.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "ever-gauzy.selectorLabels" . | nindent 6 }}
+  {{- toYaml .Values.podDisruptionBudget | nindent 2 }}
+{{- end -}}

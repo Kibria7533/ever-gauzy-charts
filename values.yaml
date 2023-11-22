@@ -3,6 +3,61 @@
 # Declare variables to be passed into your templates.
 # Please do not change anything if you dont know what you are doing
 
+
+# Optionally override the fully qualified name
+fullnameOverride: ""
+
+# Optionally override the name
+nameOverride: ""
+
+
+image:
+  # The Ever-Gauzy image repository
+  repository: everco/gauzy-api-demo
+  # Overrides the Ever-Gauzy image tag whose default is the chart appVersion
+  tag: "1.0.1"
+  # The Ever-Gauzy image pull policy
+  pullPolicy: IfNotPresent
+
+# Image pull secrets for the Pod
+imagePullSecrets: []
+# - name: myRegistrKeySecretName
+
+
+service:
+  # Annotations for headless and HTTP Services
+  annotations: {}
+  # Additional labels for headless and HTTP Services
+  labels: {}
+  # key: value
+  # The Service type
+  type: ClusterIP
+  # Optional IP for the load balancer. Used for services of type LoadBalancer only
+  loadBalancerIP: ""
+  # The http Service port
+  httpPort: 80
+  # The HTTP Service node port if type is NodePort
+  httpNodePort: null
+  # The HTTPS Service port
+  httpsPort: 8443
+  # The HTTPS Service node port if type is NodePort
+  httpsNodePort: null
+  # Additional Service ports, e. g. for custom admin console
+  extraPorts: []
+  # When using Service type LoadBalancer, you can restrict source ranges allowed
+  # to connect to the LoadBalancer, e. g. will result in Security Groups
+  # (or equivalent) with inbound source ranges allowed to connect
+  loadBalancerSourceRanges: []
+  # When using Service type LoadBalancer, you can preserve the source IP seen in the container
+  # by changing the default (Cluster) to be Local.
+  # See https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
+  externalTrafficPolicy: "Cluster"
+  # Session affinity
+  # See https://kubernetes.io/docs/concepts/services-networking/service/#proxy-mode-userspace
+  sessionAffinity: ""
+  # Session affinity config
+  sessionAffinityConfig: {}
+
 #Below this siteIP and sites will be writen inside th hosts file of the pods
 siteIP: "172.17.177.89"
 
@@ -219,3 +274,32 @@ affinity:
                   topologyKey: kubernetes.io/hostname
               weight: 1
 
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # Specifies whether the ServiceAccount can get and list pods
+  allowReadPods: false
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+  # Additional annotations for the ServiceAccount
+  annotations: {}
+  # Additional labels for the ServiceAccount
+  labels: {}
+  # Image pull secrets that are attached to the ServiceAccount
+  imagePullSecrets: []
+  # Automount API credentials for the Service Account
+  automountServiceAccountToken: true
+
+rbac:
+  create: false
+  rules: []
+  # RBAC rules for KUBE_PING
+  #  - apiGroups:
+  #      - ""
+  #    resources:
+  #      - pods
+  #    verbs:
+  #      - get
+  #      - list

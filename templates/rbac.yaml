@@ -1,0 +1,27 @@
+{{- if and .Values.rbac.create .Values.rbac.rules }}
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ include "ever-gauzy.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "ever-gauzy.labels" . | nindent 4 }}
+rules:
+  {{- toYaml .Values.rbac.rules | nindent 2 }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ include "ever-gauzy.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "ever-gauzy.labels" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ include "ever-gauzy.fullname" . }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "ever-gauzy.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace | quote }}
+{{- end }}
