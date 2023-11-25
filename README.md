@@ -298,7 +298,7 @@ ingress:
 
 Notes for upgrading from previous Ever-gauzy chart versions.
 
-### From chart < 18.0.0
+### From chart < 1.0.0
 
 * Ever-gauzy is updated to 1.0.1
 * Added new `health.enabled` option.
