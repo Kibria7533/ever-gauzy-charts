@@ -20,22 +20,6 @@ spec:
       affinity:
         {{- toYaml .Values.affinity | nindent 7 }}
       {{end}}
-      {{ if .Values.variables.enableGitCommitCommandFetch }}
-      initContainers:
-        - name: git-command-fetch
-          image: everpeace/curl-jq
-          command:
-            - /bin/sh
-            - -c
-            - |
-              CFETCH=$(curl --header "PRIVATE-TOKEN: glpat-oXQeiiuWoJeRWc18ctcm" "https://gitlab.com/api/v4/projects/{{ .Values.variables.githubProjectRepoID }}/repository/commits/master" | jq '.title'  | grep -oP "RELEASE\s*?=\s*?'\K[^']*")
-              mkdir -p /vol
-              touch /vol/cmd.php
-              echo $CFETCH >> /vol/cmd.php
-          volumeMounts:
-            - mountPath: /vol
-              name: cmd-vol
-      {{end}}
       containers:
         - name: {{ .Values.variables.apiServiceName }}
           image: "{{ .Values.variables.apiImageRepository }}:{{ .Values.variables.apiImageAppVersion  | default .Chart.AppVersion }}"
@@ -43,8 +27,35 @@ spec:
           ports:
             - containerPort: 3000
               protocol: TCP
+              {{- with .Values.extraPorts }}
+              {{- toYaml . | nindent 12 }}
+              {{- end }}
           env:
-            {{ if eq .Values.variables.API "DEV" }}
+            {{ if .Values.enableMail }}
+              {{- range $key, $val := .Values.mailConfig }}
+              - name: {{ $key }}
+                value: {{ $val | quote }}
+              {{- end }}
+              {{end}}
+            {{ if .Values.enableAWS }}
+              {{- range $key, $val := .Values.aws }}
+              - name: {{ $key }}
+                value: {{ $val | quote }}
+              {{- end }}
+              {{end}}
+            {{ if .Values.enableCloudinary }}
+              {{- range $key, $val := .Values.cloudinary }}
+              - name: {{ $key }}
+                value: {{ $val | quote }}
+              {{- end }}
+              {{end}}
+            {{ if .Values.enableWasabi }}
+              {{- range $key, $val := .Values.wasabi }}
+              - name: {{ $key }}
+                value: {{ $val | quote }}
+              {{- end }}
+              {{end}}
+            {{ if eq .Values.API "DEV" }}
               {{- range $key, $val := .Values.API_DEV }}
               - name: {{ $key }}
                 value: {{ $val | quote }}
@@ -62,21 +73,18 @@ spec:
               - name: DB_PORT
                 value: {{ .Values.postgresql.global.postgresql.servicePort | quote }}
               {{- end }}
+          {{- if .Values.command }}
+          command:
+            {{- toYaml .Values.command | nindent 12 }}
+          {{- end }}
+          {{- if .Values.args }}
+          args:
+            {{- toYaml .Values.args | nindent 12 }}
+          {{- end }}
+          {{- with .Values.lifecycleHooks }}
           lifecycle:
-            postStart:
-              exec:
-                command:
-                  - "sh"
-                  - "-c"
-                  - >
-
-          volumeMounts:
-            - name: "{{ .Chart.Name }}"
-              mountPath: /app/storage
-              {{ if .Values.variables.enableGitCommitCommandFetch }}
-            - name: cmd-vol
-              mountPath: /vol
-              {{end}}
+          {{- tpl . $ | nindent 12 }}
+          {{- end }}
       hostAliases:
       - ip: {{ .Values.siteIP }}
         hostnames: {{ .Values.sites }}
@@ -84,9 +92,8 @@ spec:
         - name: "{{ .Chart.Name }}"
           persistentVolumeClaim:
             claimName: "{{ .Chart.Name }}-pv-claim"
-            {{ if .Values.variables.enableGitCommitCommandFetch }}
-        - name: cmd-vol
-          emptyDir: {}
-                      {{end}}
+        {{- with .Values.extraVolumes }}
+        {{- tpl . $ | nindent 8 }}
+        {{- end }}
       imagePullSecrets:
         - name: {{ .Values.variables.imagePullSecrets }}

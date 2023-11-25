@@ -54,7 +54,7 @@ Ever-gauzy was installed with a Service of type ClusterIP
 
 Create a port-forwarding with the following commands:
 
-export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "Ever-gauzy.name" . }},app.kubernetes.io/instance={{ .Release.Name }}" -o name)
+export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "ever-gauzy.name" . }},app.kubernetes.io/instance={{ .Release.Name }}" -o name)
 echo "Visit http://127.0.0.1:8080 to use your application"
 kubectl --namespace {{ .Release.Namespace }} port-forward "$POD_NAME" 8080
 

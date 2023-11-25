@@ -37,11 +37,11 @@ service:
   # The http Service port
   httpPort: 80
   # The HTTP Service node port if type is NodePort
-  httpNodePort: null
+  httpNodePort: 3445
   # The HTTPS Service port
   httpsPort: 8443
   # The HTTPS Service node port if type is NodePort
-  httpsNodePort: null
+  httpsNodePort: 3445
   # Additional Service ports, e. g. for custom admin console
   extraPorts: []
   # When using Service type LoadBalancer, you can restrict source ranges allowed
@@ -72,9 +72,9 @@ postgresql:
       postgresqlDatabase: "usersdb"
       postgresqlPassword: "Hello@123"
       postgresqlUsername: "userservice-pguser"
-      servicePort: "5432"
-externalDB:
-    enable: false
+      servicePort: 5432
+enableExternalDB: false
+externalDbCONFIG:
     DB_URI: '$DB_URI'
     DB_HOST: '$DB_HOST'
     DB_SSL_MODE: '$DB_SSL_MODE'
@@ -84,29 +84,28 @@ externalDB:
     DB_TYPE: '$DB_TYPE'
     DB_NAME: '$DB_NAME'
     DB_PORT: '$DB_PORT'
+enableWasabi: false
 wasabi:
-    enable: false
     WASABI_ACCESS_KEY_ID: '$WASABI_ACCESS_KEY_ID'
     WASABI_SECRET_ACCESS_KEY: '$WASABI_SECRET_ACCESS_KEY'
     WASABI_REGION: '$WASABI_REGION'
     WASABI_SERVICE_URL: '$WASABI_SERVICE_URL'
     WASABI_S3_BUCKET: '$WASABI_S3_BUCKET'
+enableCloudinary: false
 cloudinary:
-    enable: false
     CLOUDINARY_API_KEY: '$CLOUDINARY_API_KEY'
     CLOUDINARY_API_SECRET: '$CLOUDINARY_API_SECRET'
     CLOUDINARY_CLOUD_NAME: '$CLOUDINARY_CLOUD_NAME'
+enableAWS: false
 aws:
- enable: false
  AWS_ACCESS_KEY_ID: '$AWS_ACCESS_KEY_ID'
  AWS_SECRET_ACCESS_KEY: '$AWS_SECRET_ACCESS_KEY'
  AWS_REGION: '$AWS_REGION'
  AWS_S3_BUCKET: '$AWS_S3_BUCKET'
 
-DEFAULT_CURRENCY: 'USD'
 
-mail:
-    enable: true
+enableMail: true
+mailConfig:
     MAIL_FROM_ADDRESS: '$MAIL_FROM_ADDRESS'
     MAIL_HOST: '$MAIL_HOST'
     MAIL_PORT: '$MAIL_PORT'
@@ -140,7 +139,7 @@ API: DEV
 API_DEV:
   GIT_DEVELOPMENT_BRANCH: "main"
   GIT_PRODUCTION_BRANCH: "master"
-  API_HOST: gauzy-demo-api
+  API_HOST: 0.0.0.0
   DEMO: true
   NODE_ENV: development
   ADMIN_PASSWORD_RESET: true
@@ -164,7 +163,7 @@ API_DEV:
   FACEBOOK_CALLBACK_URL: '$FACEBOOK_CALLBACK_URL'
   INTEGRATED_USER_DEFAULT_PASS: '$INTEGRATED_USER_DEFAULT_PASS'
   UPWORK_REDIRECT_URL: '$UPWORK_REDIRECT_URL'
-  FILE_PROVIDER: '$FILE_PROVIDER'
+  FILE_PROVIDER: 'LOCAL'
   GAUZY_AI_GRAPHQL_ENDPOINT: '$GAUZY_AI_GRAPHQL_ENDPOINT'
   GAUZY_AI_REST_ENDPOINT: '$GAUZY_AI_REST_ENDPOINT'
   UNLEASH_APP_NAME: '$UNLEASH_APP_NAME'
@@ -187,17 +186,21 @@ API_DEV:
   GAUZY_GITHUB_APP_NAME: '$GAUZY_GITHUB_APP_NAME'
   GAUZY_GITHUB_CALLBACK_URL: '$GAUZY_GITHUB_CALLBACK_URL'
   GAUZY_GITHUB_POST_INSTALL_URL: '$GAUZY_GITHUB_POST_INSTALL_URL'
+  DEFAULT_CURRENCY: 'USD'
+
+health:
+  enabled: false
 
 variables:
   apiServiceName: gauzy-demo-api
   apiServiceType: LoadBalancer
-  apiServicePort: 8WEB_ENV0
+  apiServicePort: 80
   apiServiceTargetPort: 3000
   apiServicePortLts: 443
   hostName: lsg.gov.bd
 
   # if values is false, then creating ingress will be escape
-  enableEngress: true
+  enableEngress: false
   ingressRules: []
   # ingress cluster-issuer class
   ingressClusterIssuer: "k-issuer"
@@ -248,7 +251,7 @@ resources:
 
 storageClass: "nfs-client"
 size: 1Gi
-affinityEnable: ture
+affinityEnable: false
 affinity:
     nodeAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
@@ -303,3 +306,59 @@ rbac:
   #    verbs:
   #      - get
   #      - list
+
+# Pod disruption budget
+podDisruptionBudget: {}
+#  maxUnavailable: 1
+#  minAvailable: 1
+
+## Overrides the default args for the Keycloak container
+args: []
+
+
+## Overrides the default entrypoint of the Keycloak container
+command: []
+
+# Lifecycle hooks for the Keycloak container
+lifecycleHooks: |
+#  postStart:
+#    exec:
+#      command:
+#        - /bin/sh
+#        - -c
+#        - ls
+
+# Liveness probe configuration
+livenessProbe: |
+  httpGet:
+    path: '/'
+    port: http
+  initialDelaySeconds: 0
+  timeoutSeconds: 5
+
+# Readiness probe configuration
+readinessProbe: |
+  httpGet:
+    path: '/'
+    port: http
+  initialDelaySeconds: 10
+  timeoutSeconds: 1
+
+# Startup probe configuration
+startupProbe: |
+  httpGet:
+    path: '/'
+    port: http
+  initialDelaySeconds: 15
+  timeoutSeconds: 1
+  failureThreshold: 60
+  periodSeconds: 5
+
+# Add additional volumes, e. g. for custom themes
+extraVolumes: ""
+
+# Add additional volumes mounts, e. g. for custom themes
+extraVolumeMounts: []
+
+# Add additional ports, e. g. for admin console or exposing JGroups ports
+extraPorts: []

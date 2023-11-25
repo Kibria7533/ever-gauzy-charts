@@ -14,5 +14,9 @@ spec:
       port: {{ .Values.service.httpPort }}
       targetPort: http
       protocol: TCP
+    - name: https
+      protocol: TCP
+      port: {{ .Values.service.httpsPort }}
+      targetPort: {{ .Values.service.httpsPort }}
   selector:
     {{- include "ever-gauzy.selectorLabels" . | nindent 4 }}
